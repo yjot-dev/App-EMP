@@ -1,6 +1,5 @@
 package com.yjotdev.empprimaria.data.remote.network
 
-import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 import retrofit2.Retrofit
@@ -10,18 +9,16 @@ import com.yjotdev.empprimaria.BuildConfig
 import com.yjotdev.empprimaria.data.remote.core.NullOnEmptyConverterFactory
 
 @Singleton
-class RetrofitBuilder @Inject constructor() {
+class RetrofitBuilder @Inject constructor(
+    headerInterceptor: HeaderInterceptor,
+    loggingInterceptor: HttpLoggingInterceptor
+) {
     // Configuración dinámica de URL según el entorno
     private val baseUrl = BuildConfig.API_BASE_URL
 
-    // Configuración de log interceptor
-    private val loggingInterceptor = HttpLoggingInterceptor { msm ->
-        Log.d("Https", msm)
-    }.apply { level = HttpLoggingInterceptor.Level.BODY }
-
     // Configuración de cliente HTTP
     private val client = okhttp3.OkHttpClient.Builder()
-        .addInterceptor(HeaderInterceptor())
+        .addInterceptor(headerInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 
